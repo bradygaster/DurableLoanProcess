@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -13,6 +15,13 @@ namespace FunctionsTests
 {
     public static class LoanApprovalProcess
     {
+        [FunctionName("negotiate")]
+        public static SignalRConnectionInfo GetSignalRInfo(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req,
+            [SignalRConnectionInfo(HubName = "dashboard")] SignalRConnectionInfo connectionInfo)
+        {
+            return connectionInfo;
+        }
 
         [FunctionName(nameof(HttpStart))]
         public static async Task<HttpResponseMessage> HttpStart(
@@ -32,7 +41,8 @@ namespace FunctionsTests
         
         [FunctionName(nameof(Run))]
         public static async Task<LoanApplicationResult> Run(
-            [OrchestrationTrigger] DurableOrchestrationContext context, 
+            [OrchestrationTrigger] DurableOrchestrationContext context,
+            [SignalR(HubName = "dashboard")] IAsyncCollector<SignalRMessage> dashboardMessages, 
             ILogger logger)
         {
             var loanApplication = context.GetInput<LoanApplication>();
@@ -41,45 +51,87 @@ namespace FunctionsTests
 
             logger.LogWarning($"Status of application for {loanApplication.CustomerName} for {loanApplication.LoanAmount}: Checking with agencies.");
             
-            agencies.AddRange(new CreditAgencyRequest[] {
-                new CreditAgencyRequest { AgencyName = "Experian", Application = loanApplication },
-                new CreditAgencyRequest { AgencyName = "TransUnion", Application = loanApplication },
-                new CreditAgencyRequest { AgencyName = "Experian", Application = loanApplication }
-            });
+            // start the process and perform initial validation
+            var loanStarted = await context.CallActivityAsync<bool>(nameof(StartLoanApprovalProcess), loanApplication);
 
-            foreach (var agency in agencies)
+            // fan out and check the credit agencies
+            if(loanStarted)
             {
-                results.Add(
-                    (await context.CallActivityAsync<CreditAgencyResult>(nameof(CheckCreditAgency), agency))
-                );
+                agencies.AddRange(new CreditAgencyRequest[] {
+                    new CreditAgencyRequest { AgencyName = "Contoso, Ltd.", Application = loanApplication },
+                    new CreditAgencyRequest { AgencyName = "Fabrikam, Inc.", Application = loanApplication },
+                    new CreditAgencyRequest { AgencyName = "Woodgrove Bank", Application = loanApplication }
+                });
+
+                foreach (var agency in agencies)
+                {
+                    results.Add(
+                        (await context.CallActivityAsync<CreditAgencyResult>(nameof(CheckCreditAgency), agency))
+                    );
+                }
             }
 
             var response = new LoanApplicationResult
             {
                 Application = loanApplication,
-                IsSuccess = !(results.Any(x => x.IsApproved == false))
+                IsSuccess = loanStarted && !(results.Any(x => x.IsApproved == false))
             };
 
             logger.LogWarning($"Agency checks result with {response.IsSuccess} for loan amount of {response.Application.LoanAmount} to customer {response.Application.CustomerName}");
+
+            await dashboardMessages.AddAsync(new SignalRMessage
+            {
+                Target = "loanApplicationComplete",
+                Arguments = new object[] { response }
+            });
             
             return response;
+        }
+
+        [FunctionName(nameof(StartLoanApprovalProcess))]
+        public async static Task<bool> StartLoanApprovalProcess(
+            [SignalR(HubName = "dashboard")] IAsyncCollector<SignalRMessage> dashboardMessages,
+            [ActivityTrigger] LoanApplication loanApplication,
+            ILogger log)
+        {
+            await dashboardMessages.AddAsync(new SignalRMessage
+            {
+                Target = "loanApplicationStart",
+                Arguments = new object[] { loanApplication }
+            });
+
+            return loanApplication.LoanAmount < 10000;
         }
         
         [FunctionName(nameof(CheckCreditAgency))]
         public async static Task<CreditAgencyResult> CheckCreditAgency(
-            [ActivityTrigger] CreditAgencyRequest request, 
+            [ActivityTrigger] CreditAgencyRequest request,
+            [SignalR(HubName = "dashboard")] IAsyncCollector<SignalRMessage> dashboardMessages,
             ILogger log)
         {
             log.LogWarning($"Checking agency {request.AgencyName} for customer {request.Application.CustomerName} for {request.Application.LoanAmount}");
+
+            await dashboardMessages.AddAsync(new SignalRMessage
+            {
+                Target = "agencyCheckStarted",
+                Arguments = new object[] { request }
+            });
 
             var rnd = new Random();
             await Task.Delay(rnd.Next(3000, 6000)); // simulate variant processing times
 
             var result = new CreditAgencyResult
             {
-                IsApproved = true,
-                Application = request.Application
+                IsApproved = !(request.AgencyName.Contains("Woodgrove") && request.Application.LoanAmount > 4999),
+                Application = request.Application,
+                AgencyName = request.AgencyName
             };
+
+            await dashboardMessages.AddAsync(new SignalRMessage
+            {
+                Target = "agencyCheckComplete",
+                Arguments = new object[] { result }
+            });
 
             log.LogWarning($"Agency {request.AgencyName} {(result.IsApproved ? "APPROVED" : "DECLINED")} request by customer {request.Application.CustomerName} for {request.Application.LoanAmount}");
 
@@ -101,6 +153,7 @@ namespace FunctionsTests
 
     public class CreditAgencyResult
     {
+        public string AgencyName { get; set; }
         public LoanApplication Application { get; set; }
         public bool IsApproved { get; set; }
     }
