@@ -46,8 +46,9 @@ namespace FunctionsTests
             ILogger logger)
         {
             var loanApplication = context.GetInput<LoanApplication>();
+            var agencyTasks = new List<Task<CreditAgencyResult>>();
             var agencies = new List<CreditAgencyRequest>();
-            var results = new List<CreditAgencyResult>();
+            var results = new CreditAgencyResult[]{};
 
             logger.LogWarning($"Status of application for {loanApplication.CustomerName} for {loanApplication.LoanAmount}: Checking with agencies.");
             
@@ -65,10 +66,10 @@ namespace FunctionsTests
 
                 foreach (var agency in agencies)
                 {
-                    results.Add(
-                        (await context.CallActivityAsync<CreditAgencyResult>(nameof(CheckCreditAgency), agency))
-                    );
+                    agencyTasks.Add(context.CallActivityAsync<CreditAgencyResult>(nameof(CheckCreditAgency), agency));
                 }
+
+                results = await Task.WhenAll(agencyTasks);
             }
 
             var response = new LoanApplicationResult
