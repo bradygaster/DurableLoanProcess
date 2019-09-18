@@ -59,9 +59,9 @@ namespace FunctionsTests
             if(loanStarted)
             {
                 agencies.AddRange(new CreditAgencyRequest[] {
-                    new CreditAgencyRequest { AgencyName = "Contoso, Ltd.", Application = loanApplication },
-                    new CreditAgencyRequest { AgencyName = "Fabrikam, Inc.", Application = loanApplication },
-                    new CreditAgencyRequest { AgencyName = "Woodgrove Bank", Application = loanApplication }
+                    new CreditAgencyRequest { AgencyName = "Contoso, Ltd.", AgencyId = "contoso", Application = loanApplication },
+                    new CreditAgencyRequest { AgencyName = "Fabrikam, Inc.", AgencyId = "fabrikam", Application = loanApplication },
+                    new CreditAgencyRequest { AgencyName = "Woodgrove Bank", AgencyId = "woodgrove", Application = loanApplication }
                 });
 
                 foreach (var agency in agencies)
@@ -69,7 +69,19 @@ namespace FunctionsTests
                     agencyTasks.Add(context.CallActivityAsync<CreditAgencyResult>(nameof(CheckCreditAgency), agency));
                 }
 
+                await dashboardMessages.AddAsync(new SignalRMessage
+                {
+                    Target = "agencyCheckPhaseStarted",
+                    Arguments = new object[] { }
+                });
+
                 results = await Task.WhenAll(agencyTasks);
+
+                await dashboardMessages.AddAsync(new SignalRMessage
+                {
+                    Target = "agencyCheckPhaseCompleted",
+                    Arguments = new object[] { !(results.Any(x => x.IsApproved == false)) }
+                });
             }
 
             var response = new LoanApplicationResult
@@ -101,7 +113,17 @@ namespace FunctionsTests
                 Arguments = new object[] { loanApplication }
             });
 
-            return loanApplication.LoanAmount < 10000;
+            await Task.Delay(new Random().Next(3000, 6000)); // simulate variant processing times
+
+            var result = loanApplication.LoanAmount < 10000;
+
+            await dashboardMessages.AddAsync(new SignalRMessage
+            {
+                Target = "loanApplicationReceived",
+                Arguments = new object[] { loanApplication, result }
+            });
+
+            return result;
         }
         
         [FunctionName(nameof(CheckCreditAgency))]
@@ -125,7 +147,7 @@ namespace FunctionsTests
             {
                 IsApproved = !(request.AgencyName.Contains("Woodgrove") && request.Application.LoanAmount > 4999),
                 Application = request.Application,
-                AgencyName = request.AgencyName
+                AgencyId = request.AgencyId
             };
 
             await dashboardMessages.AddAsync(new SignalRMessage
@@ -150,11 +172,12 @@ namespace FunctionsTests
     {
         public string AgencyName { get; set; }
         public LoanApplication Application { get; set; }
+        public string AgencyId { get; set; }
     }
 
     public class CreditAgencyResult
     {
-        public string AgencyName { get; set; }
+        public string AgencyId { get; set; }
         public LoanApplication Application { get; set; }
         public bool IsApproved { get; set; }
     }
