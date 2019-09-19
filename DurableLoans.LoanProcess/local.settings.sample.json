@@ -6,8 +6,8 @@
         "AzureSignalRConnectionString" : "Endpoint=..."
     },
     "Host": {
-      "LocalHttpPort": 7071,
-      "CORS": "http://localhost:8080",
-      "CORSCredentials": true
+        "LocalHttpPort": 7071,
+        "CORS": "http://localhost:8080",
+        "CORSCredentials": true
     }
 }
