@@ -23,7 +23,7 @@ namespace DurableLoans.LoanProcess
             });
 
             var rnd = new Random();
-            await Task.Delay(rnd.Next(3000, 6000)); // simulate variant processing times
+            await Task.Delay(rnd.Next(2000, 4000)); // simulate variant processing times
 
             var result = new CreditAgencyResult
             {

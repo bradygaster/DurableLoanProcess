@@ -94,22 +94,19 @@ ViewData["Title"] = "Home page";
         }
     }
 
-    function start() {
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl('http://localhost:7071/api')
+    const connection = new signalR.HubConnectionBuilder()
+            .withUrl('@Model.HubUrl')
+            .withAutomaticReconnect()
             .configureLogging(signalR.LogLevel.Information)
             .build();
 
+    function wireUpEventHandlers() {
         connection.on('loanApplicationStart', (loanApplication) => {
-            console.log('loan application started');
-            console.log(loanApplication);
             resetView();
             document.getElementById('reception').classList.add('active');
         });
 
         connection.on('loanApplicationReceived', (loanApplication, result) => {
-            console.log('loan application started');
-            console.log(loanApplication);
             if(result == true)
             {
                 setStepState('reception', 'completed');
@@ -136,15 +133,10 @@ ViewData["Title"] = "Home page";
         });
 
         connection.on('agencyCheckStarted', (request) => {
-            console.log('agency check started');
-            console.log(request);
             setStepState(request.AgencyId, 'active');
         });
 
         connection.on('agencyCheckComplete', (result) => {
-            console.log('agency check complete');
-            console.log(result);
-            console.log(result.IsApproved == true)
             if(result.IsApproved == true)
             {
                 setStepState(result.AgencyId, 'completed');
@@ -156,8 +148,6 @@ ViewData["Title"] = "Home page";
         });
 
         connection.on('loanApplicationComplete', (result) => {
-            console.log('loan application complete');
-            console.log(result);
             if(result.IsSuccess == true)
             {
                 setStepState('confirmation', 'completed');
@@ -167,9 +157,18 @@ ViewData["Title"] = "Home page";
                 setStepState('confirmation', 'disabled');
             }
         });
-
-        connection.start()
-            .then(() => { })
-            .catch(console.error);
     }
+
+    async function start() {
+        try {
+            wireUpEventHandlers();
+            await connection.start();
+            console.assert(connection.state === signalR.HubConnectionState.Connected);
+            console.log("connected");
+        } catch (err) {
+            console.assert(connection.state === signalR.HubConnectionState.Disconnected);
+            console.log(err);
+            setTimeout(() => start(), 5000);
+        }
+    };
 </script>

@@ -19,7 +19,7 @@ namespace DurableLoans.LoanProcess
                 Arguments = new object[] { loanApplication }
             });
 
-            await Task.Delay(new Random().Next(3000, 6000)); // simulate variant processing times
+            await Task.Delay(new Random().Next(1000, 3000)); // simulate variant processing times
 
             var result = loanApplication.LoanAmount < 10000;
 

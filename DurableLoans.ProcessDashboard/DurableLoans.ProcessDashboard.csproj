@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
     <PropertyGroup>
+        <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
         <TargetFramework>netcoreapp3.0</TargetFramework>
     </PropertyGroup>
     <PropertyGroup>
