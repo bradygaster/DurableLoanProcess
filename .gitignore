@@ -334,6 +334,7 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
-ui/package-lock.json
-DurableLoans.ProcessDashboard/package-lock.json
-DurableLoans.LoanProcess/local.settings.json
+
+# misc
+**/package-lock.json
+**/local.settings.json
