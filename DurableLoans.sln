@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DurableLoans.LoanProcess", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DurableLoans.ProcessDashboard", "DurableLoans.ProcessDashboard\DurableLoans.ProcessDashboard.csproj", "{ED81F1B2-CDA6-4F42-9B42-1CDF96DD1872}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DurableLoans.LoanOfficerNotificationService", "DurableLoans.LoanOfficerNotificationService\DurableLoans.LoanOfficerNotificationService.csproj", "{740C5D70-3E8E-4A4F-A1B3-F9D1F63EF425}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,5 +46,17 @@ Global
 		{ED81F1B2-CDA6-4F42-9B42-1CDF96DD1872}.Release|x64.Build.0 = Release|Any CPU
 		{ED81F1B2-CDA6-4F42-9B42-1CDF96DD1872}.Release|x86.ActiveCfg = Release|Any CPU
 		{ED81F1B2-CDA6-4F42-9B42-1CDF96DD1872}.Release|x86.Build.0 = Release|Any CPU
+		{740C5D70-3E8E-4A4F-A1B3-F9D1F63EF425}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{740C5D70-3E8E-4A4F-A1B3-F9D1F63EF425}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{740C5D70-3E8E-4A4F-A1B3-F9D1F63EF425}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{740C5D70-3E8E-4A4F-A1B3-F9D1F63EF425}.Debug|x64.Build.0 = Debug|Any CPU
+		{740C5D70-3E8E-4A4F-A1B3-F9D1F63EF425}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{740C5D70-3E8E-4A4F-A1B3-F9D1F63EF425}.Debug|x86.Build.0 = Debug|Any CPU
+		{740C5D70-3E8E-4A4F-A1B3-F9D1F63EF425}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{740C5D70-3E8E-4A4F-A1B3-F9D1F63EF425}.Release|Any CPU.Build.0 = Release|Any CPU
+		{740C5D70-3E8E-4A4F-A1B3-F9D1F63EF425}.Release|x64.ActiveCfg = Release|Any CPU
+		{740C5D70-3E8E-4A4F-A1B3-F9D1F63EF425}.Release|x64.Build.0 = Release|Any CPU
+		{740C5D70-3E8E-4A4F-A1B3-F9D1F63EF425}.Release|x86.ActiveCfg = Release|Any CPU
+		{740C5D70-3E8E-4A4F-A1B3-F9D1F63EF425}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

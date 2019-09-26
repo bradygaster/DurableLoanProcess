@@ -7,11 +7,20 @@ using Microsoft.AspNetCore.Mvc;
 namespace DurableLoans.LoanOfficerNotificationService.Services
 {
     [Route("api/[controller]")]
-    public class ReceiveLoan : Controller
+    public class LoanApplicationController : Controller
     {
-        [HttpPost]
-        public void Post([FromBody] LoanApplication loanApplication)
+        public LoanApplicationController(LoanApplicationProxy loanApplicationProxy)
         {
+            LoanApplicationProxy = loanApplicationProxy;
+        }
+
+        public LoanApplicationProxy LoanApplicationProxy { get; }
+
+        [HttpPost]
+        public ActionResult Post([FromBody] LoanApplication loanApplication)
+        {
+            LoanApplicationProxy.SendLoanApplicationToOfficer(loanApplication);
+            return Accepted();
         }
     }
 }
