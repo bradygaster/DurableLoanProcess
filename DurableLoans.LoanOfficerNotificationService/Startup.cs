@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DurableLoans.LoanOfficerNotificationService.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace DurableLoans.LoanOfficerNotificationService
 {
@@ -17,6 +19,12 @@ namespace DurableLoans.LoanOfficerNotificationService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddGrpc();
+            services.AddControllers();
+            services.AddSingleton<LoanApplicationProxy>();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Loan Officer Approval Service", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -29,14 +37,21 @@ namespace DurableLoans.LoanOfficerNotificationService
 
             app.UseRouting();
 
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Loan Officer API v1");
+            });
+
             app.UseEndpoints(endpoints =>
             {
-                //endpoints.MapGrpcService<GreeterService>();
-
-                endpoints.MapGet("/", async context =>
+                endpoints.MapGrpcService<LoanApplicationReceivedNotifierService>();
+                endpoints.MapGet("/proto", async req =>
                 {
-                    await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+                    await req.Response.SendFileAsync("Protos/LoanOffice.proto", req.RequestAborted);
                 });
+                endpoints.MapGet("/", async req => await req.Response.WriteAsync("Healthy"));
+                endpoints.MapControllers();
             });
         }
     }

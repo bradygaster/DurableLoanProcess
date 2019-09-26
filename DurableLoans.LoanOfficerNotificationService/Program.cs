@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting;
 
 namespace DurableLoans.LoanOfficerNotificationService
@@ -21,6 +22,11 @@ namespace DurableLoans.LoanOfficerNotificationService
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.ConfigureKestrel(options =>
+                    {
+                        options.ListenLocalhost(4000, o => o.Protocols = 
+                            HttpProtocols.Http1AndHttp2);
+                    });
                     webBuilder.UseStartup<Startup>();
                 });
     }
