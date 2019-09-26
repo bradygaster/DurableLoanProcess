@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "dependencies": {
-    "@microsoft/signalr": "^3.0.0-rc1.19457.4"
+    "@microsoft/signalr": "^3.0.0"
   },
   "devDependencies": {},
   "author": "",
