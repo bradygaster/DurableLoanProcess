@@ -1,0 +1,75 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+      "title": "Loan Officer Approval Service",
+      "version": "v1"
+    },
+    "paths": {
+      "/api/LoanApplication": {
+        "post": {
+          "tags": [
+            "LoanApplication"
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoanApplication"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoanApplication"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoanApplication"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "CreditAgencyResult": {
+          "type": "object",
+          "properties": {
+            "agencyId": {
+              "type": "string"
+            },
+            "isApproved": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        "LoanApplication": {
+          "type": "object",
+          "properties": {
+            "customerName": {
+              "type": "string"
+            },
+            "loanAmount": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "creditAgencyResults": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/CreditAgencyResult"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    }
+  }
