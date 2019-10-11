@@ -1,0 +1,41 @@
+﻿@using DurableLoans.DomainModel
+@using DurableLoans.Web.Services
+@inject CurrencyConversionService CurrencyConversionService
+
+<div class="input-group-prepend" @onclick="SwitchCurrencyType">
+    <button class="btn btn-outline-secondary" type="button">@LoanAmount.CurrencyType</button>
+</div>
+<InputNumber id="loanAmount" @bind-Value="LoanAmount.Amount" class="form-control" />
+
+@code {
+    [Parameter]
+    public ViewModels.LoanAmount LoanAmount { get; set; }
+
+    [Parameter]
+    public EventCallback<ViewModels.LoanAmount> LoanAmountChanged { get; set; }
+
+    private async Task SwitchCurrencyType()
+    {
+        Currency currencyTypeFrom =
+            CurrencyConversionService.GetCurrencyEnumValueFromSymbol(LoanAmount.CurrencyType);
+        LoanAmount.CurrencyType = LoanAmount.CurrencyType == Constants.UsDollarSymbol
+            ? Constants.BulgarianLevSymbol : Constants.UsDollarSymbol;
+
+        if (LoanAmount.Amount > 0.00m)
+        {
+            Currency currencyTypeTo =
+                CurrencyConversionService.GetCurrencyEnumValueFromSymbol(LoanAmount.CurrencyType);
+
+            var conversion = new CurrencyConversion
+            {
+                CurrencyTypeFrom = currencyTypeFrom,
+                CurrencyTypeTo = currencyTypeTo,
+                AmountToConvert = LoanAmount.Amount,
+            };
+
+            LoanAmount.Amount = await CurrencyConversionService.GetConvertedAmountAsync(conversion);
+        }
+
+        await LoanAmountChanged.InvokeAsync(LoanAmount);
+    }
+}

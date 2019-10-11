@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
 using Microsoft.Azure.WebJobs.Extensions.SignalRService;
+using DurableLoans.DomainModel;
 
 namespace DurableLoans.LoanProcess
 {
@@ -21,7 +21,7 @@ namespace DurableLoans.LoanProcess
 
             await Task.Delay(new Random().Next(1000, 3000)); // simulate variant processing times
 
-            var result = loanApplication.LoanAmount < 10000;
+            bool result = loanApplication.LoanAmount.Amount < 10000;
 
             await dashboardMessages.AddAsync(new SignalRMessage
             {
