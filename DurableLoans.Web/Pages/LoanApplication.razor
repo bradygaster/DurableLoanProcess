@@ -1,0 +1,45 @@
+﻿@page "/"
+@using DurableLoans.Web.Components
+@using DurableLoans.Web.Validation
+@inject NavigationManager NavigationManager
+@inject Services.LendingService LendingService
+
+<h3>Loan Application</h3>
+
+<EditForm Model="LoanApp" OnValidSubmit="SubmitLoanApp">
+    <RecursiveDataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="firstName">First Name:</label>
+        <InputText id="firstName" @bind-Value="LoanApp.Applicant.FirstName" class="form-control form-control-lg" />
+        <ValidationMessage For="() => LoanApp.Applicant.FirstName" />
+    </div>
+    <div class="form-group">
+        <label for="lastName">Last Name:</label>
+        <InputText id="lastName" @bind-Value="LoanApp.Applicant.LastName" class="form-control form-control-lg" />
+        <ValidationMessage For="() => LoanApp.Applicant.LastName" />
+    </div>
+    <div class="form-group">
+        <label for="loanAmount">Loan Amount:</label>
+        <div class="input-group input-group-lg">
+            <CurrencyPicker @bind-LoanAmount="LoanApp.LoanAmount" />
+        </div>
+        <ValidationMessage For="() => LoanApp.LoanAmount.Amount" />
+    </div>
+
+    <button type="submit" class="btn btn-primary" disabled="@IsDisabled">Submit</button>
+</EditForm>
+
+@code {
+    private ViewModels.LoanApplication LoanApp = new ViewModels.LoanApplication();
+
+    private bool IsDisabled { get; set; }
+
+    private async Task SubmitLoanApp()
+    {
+        IsDisabled = true;
+        await LendingService.SubmitLoanAppAsync(LoanApp);
+        NavigationManager.NavigateTo("/loandashboard");
+    }
+}

@@ -1,8 +1,9 @@
+using DurableLoans.LoanProcess.Models;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.SignalRService;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
-using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 
 namespace DurableLoans.LoanProcess
 {
@@ -14,7 +15,7 @@ namespace DurableLoans.LoanProcess
             [SignalR(HubName = "dashboard")] IAsyncCollector<SignalRMessage> dashboardMessages,
             ILogger log)
         {
-            log.LogWarning($"Checking agency {request.AgencyName} for customer {request.Application.CustomerName} for {request.Application.LoanAmount}");
+            log.LogWarning($"Checking agency {request.AgencyName} for customer {request.Application.Applicant.ToString()} for {request.Application.LoanAmount}");
 
             await dashboardMessages.AddAsync(new SignalRMessage
             {
@@ -27,7 +28,7 @@ namespace DurableLoans.LoanProcess
 
             var result = new CreditAgencyResult
             {
-                IsApproved = !(request.AgencyName.Contains("Woodgrove") && request.Application.LoanAmount > 4999),
+                IsApproved = !(request.AgencyName.Contains("Woodgrove") && request.Application.LoanAmount.Amount > 4999),
                 Application = request.Application,
                 AgencyId = request.AgencyId
             };
@@ -38,7 +39,7 @@ namespace DurableLoans.LoanProcess
                 Arguments = new object[] { result }
             });
 
-            log.LogWarning($"Agency {request.AgencyName} {(result.IsApproved ? "APPROVED" : "DECLINED")} request by customer {request.Application.CustomerName} for {request.Application.LoanAmount}");
+            log.LogWarning($"Agency {request.AgencyName} {(result.IsApproved ? "APPROVED" : "DECLINED")} request by customer {request.Application.Applicant.ToString()} for {request.Application.LoanAmount}");
 
             return result;
         }

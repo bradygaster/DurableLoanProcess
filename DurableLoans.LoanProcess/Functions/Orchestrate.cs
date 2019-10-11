@@ -1,9 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using DurableLoans.DomainModel;
+using DurableLoans.LoanProcess.Models;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DurableLoans.LoanProcess
 {
@@ -20,10 +22,10 @@ namespace DurableLoans.LoanProcess
             var agencies = new List<CreditAgencyRequest>();
             var results = new CreditAgencyResult[]{};
 
-            logger.LogWarning($"Status of application for {loanApplication.CustomerName} for {loanApplication.LoanAmount}: Checking with agencies.");
-            
+            logger.LogWarning($"Status of application for {loanApplication.Applicant.ToString()} for {loanApplication.LoanAmount}: Checking with agencies.");
+
             // start the process and perform initial validation
-            var loanStarted = await context.CallActivityAsync<bool>(nameof(Receive), loanApplication);
+            bool loanStarted = await context.CallActivityAsync<bool>(nameof(Receive), loanApplication);
 
             // fan out and check the credit agencies
             if(loanStarted)
@@ -58,10 +60,10 @@ namespace DurableLoans.LoanProcess
             var response = new LoanApplicationResult
             {
                 Application = loanApplication,
-                IsSuccess = loanStarted && !(results.Any(x => x.IsApproved == false))
+                IsApproved = loanStarted && !(results.Any(x => x.IsApproved == false))
             };
 
-            logger.LogWarning($"Agency checks result with {response.IsSuccess} for loan amount of {response.Application.LoanAmount} to customer {response.Application.CustomerName}");
+            logger.LogWarning($"Agency checks result with {response.IsApproved} for loan amount of {response.Application.LoanAmount} to customer {response.Application.Applicant.ToString()}");
 
             await dashboardMessages.AddAsync(new SignalRMessage
             {
