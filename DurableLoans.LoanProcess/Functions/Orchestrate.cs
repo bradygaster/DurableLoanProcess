@@ -33,7 +33,7 @@ namespace DurableLoans.LoanProcess
                 agencies.AddRange(new CreditAgencyRequest[] {
                     new CreditAgencyRequest { AgencyName = "Contoso, Ltd.", AgencyId = "contoso", Application = loanApplication },
                     new CreditAgencyRequest { AgencyName = "Fabrikam, Inc.", AgencyId = "fabrikam", Application = loanApplication },
-                    new CreditAgencyRequest { AgencyName = "Woodgrove Bank", AgencyId = "woodgrove", Application = loanApplication }
+                    new CreditAgencyRequest { AgencyName = "Woodgrove Bank", AgencyId = "woodgrove", Application = loanApplication },
                 });
 
                 foreach (var agency in agencies)
