@@ -7,12 +7,9 @@ namespace DurableLoans.LoanProcess
 {
     public static partial class Functions
     {
-        [FunctionName(nameof(negotiate))]
-        public static SignalRConnectionInfo negotiate(
+        [FunctionName(nameof(Negotiate))]
+        public static SignalRConnectionInfo Negotiate(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req,
-            [SignalRConnectionInfo(HubName = "dashboard")] SignalRConnectionInfo connectionInfo)
-        {
-            return connectionInfo;
-        }
+            [SignalRConnectionInfo(HubName = "dashboard")] SignalRConnectionInfo connectionInfo) => connectionInfo;
     }
 }
