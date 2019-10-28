@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Runtime.InteropServices;
 
 namespace DurableLoans.Web
 {
@@ -26,8 +27,9 @@ namespace DurableLoans.Web
             IMvcBuilder builder = services.AddRazorPages();
 
 #if DEBUG
-            if (Env.IsDevelopment())
+            if (Env.IsDevelopment() && RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
+                AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
                 builder.AddRazorRuntimeCompilation();
             }
 #endif
