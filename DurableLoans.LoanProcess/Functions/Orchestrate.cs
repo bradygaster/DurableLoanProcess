@@ -13,7 +13,7 @@ namespace DurableLoans.LoanProcess
     {
         [FunctionName(nameof(Orchestrate))]
         public static async Task<LoanApplicationResult> Orchestrate(
-            [OrchestrationTrigger] DurableOrchestrationContext context,
+            [OrchestrationTrigger] IDurableOrchestrationContext context,
             [SignalR(HubName = "dashboard")] IAsyncCollector<SignalRMessage> dashboardMessages, 
             ILogger logger)
         {
