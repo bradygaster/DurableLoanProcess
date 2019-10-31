@@ -26,14 +26,14 @@ namespace DurableLoans.LoanOfficerNotificationService.Services
                 {
                     var receivedLoan = new LoanApplicationReceived
                     {
-                        CustomerName = loanApp.CustomerName,
-                        LoanAmount = loanApp.LoanAmount
+                        CustomerName = string.Format($"{loanApp.Application.Applicant.FirstName} {loanApp.Application.Applicant.LastName}"),
+                        LoanAmount = loanApp.Application.LoanAmount.Amount
                     };
 
                     receivedLoan.AgencyResults.AddRange(
-                        loanApp.CreditAgencyResults.Select(x => 
+                        loanApp.AgencyResults.Select(x => 
                             new AgencyResultReceived {
-                                AgencyId = x.AgencyId,
+                                AgencyId = x.AgencyName,
                                 IsApproved = x.IsApproved
                             })
                     );

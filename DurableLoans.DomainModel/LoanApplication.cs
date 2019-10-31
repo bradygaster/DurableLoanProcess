@@ -1,4 +1,5 @@
-﻿namespace DurableLoans.DomainModel
+﻿
+namespace DurableLoans.DomainModel
 {
     public class LoanApplication
     {

@@ -1,10 +1,13 @@
 using DurableLoans.DomainModel;
 using DurableLoans.LoanProcess.Models;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace DurableLoans.LoanProcess
@@ -59,11 +62,30 @@ namespace DurableLoans.LoanProcess
 
             var response = new LoanApplicationResult
             {
-                Application = loanApplication,
                 IsApproved = loanStarted && !(results.Any(x => x.IsApproved == false))
             };
 
-            logger.LogWarning($"Agency checks result with {response.IsApproved} for loan amount of {response.Application.LoanAmount} to customer {response.Application.Applicant.ToString()}");
+            logger.LogWarning($"Agency checks result with {response.IsApproved} for loan amount of {loanApplication.LoanAmount.Amount} to customer {loanApplication.Applicant.ToString()}");
+
+            // call the kubernetes-hosted rest api
+            foreach (var agencyResult in results)
+            {
+                response.AgencyResults.Add(new AgencyCheckResult
+                {
+                    AgencyName = agencyResult.AgencyId,
+                    IsApproved = agencyResult.IsApproved
+                });
+            }
+
+            var loanAppRequest = new {
+                CustomerName = string.Format($"{loanApplication.Applicant.FirstName} {loanApplication.Applicant.LastName}"),
+                LoanAmount = loanApplication.LoanAmount.Amount
+            };
+
+            var request = new DurableHttpRequest(
+                HttpMethod.Post,
+                new Uri("https://localhost:5003/loanapplication")
+            );
 
             await dashboardMessages.AddAsync(new SignalRMessage
             {

@@ -13,4 +13,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DurableLoans.DomainModel\DurableLoans.DomainModel.csproj" />
+  </ItemGroup>
+
 </Project>
