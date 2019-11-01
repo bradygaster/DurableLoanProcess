@@ -8,7 +8,7 @@ using DurableLoans.DomainModel;
 
 namespace DurableLoans.LoanOfficerNotificationService.Services
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class LoanApplicationController : Controller
     {
         public LoanApplicationController(LoanApplicationProxy loanApplicationProxy,

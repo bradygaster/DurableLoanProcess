@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -60,39 +61,47 @@ namespace DurableLoans.LoanProcess
                 });
             }
 
-            var response = new LoanApplicationResult
+            var loanApplicationResult = new LoanApplicationResult
             {
                 IsApproved = loanStarted && !(results.Any(x => x.IsApproved == false))
             };
 
-            logger.LogWarning($"Agency checks result with {response.IsApproved} for loan amount of {loanApplication.LoanAmount.Amount} to customer {loanApplication.Applicant.ToString()}");
+            logger.LogWarning($"Agency checks result with {loanApplicationResult.IsApproved} for loan amount of {loanApplication.LoanAmount.Amount} to customer {loanApplication.Applicant.ToString()}");
 
-            // call the kubernetes-hosted rest api
             foreach (var agencyResult in results)
             {
-                response.AgencyResults.Add(new AgencyCheckResult
+                loanApplicationResult.AgencyResults.Add(new AgencyCheckResult
                 {
                     AgencyName = agencyResult.AgencyId,
                     IsApproved = agencyResult.IsApproved
                 });
             }
 
-            var json = System.Text.Json.JsonSerializer.Serialize<LoanApplicationResult>(response);
+            // send the loan for final human validation
+            logger.LogInformation($"Sending loan application for {loanApplicationResult.Application.Applicant.FirstName} {loanApplicationResult.Application.Applicant.LastName} for approval");
+
+            var json = System.Text.Json.JsonSerializer.Serialize<LoanApplicationResult>(loanApplicationResult);
+            logger.LogDebug(json);
+
+            var url = Environment.GetEnvironmentVariable("LoanOfficerServiceUrl");
+            logger.LogDebug(url);
 
             var request = new DurableHttpRequest(
                 HttpMethod.Post,
-                new Uri("https://localhost:5003/loanapplication"),
+                new Uri(url),
                 null,
                 json
             );
 
+            DurableHttpResponse restartResponse = await context.CallHttpAsync(request);
+
             await dashboardMessages.AddAsync(new SignalRMessage
             {
                 Target = "loanApplicationComplete",
-                Arguments = new object[] { response }
+                Arguments = new object[] { loanApplicationResult }
             });
             
-            return response;
+            return loanApplicationResult;
         }
     }
 }
