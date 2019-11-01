@@ -97,7 +97,8 @@ namespace DurableLoans.LoanProcess
                 HttpMethod.Post,
                 new Uri(url),
                 headers: new Dictionary<string, StringValues>{{ "Content-Type", "application/json"}},
-                content: json
+                content: json,
+                asynchronousPatternEnabled: false
             );
 
             DurableHttpResponse restartResponse = await context.CallHttpAsync(request);
