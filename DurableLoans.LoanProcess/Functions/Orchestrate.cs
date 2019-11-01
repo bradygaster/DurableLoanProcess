@@ -77,14 +77,13 @@ namespace DurableLoans.LoanProcess
                 });
             }
 
-            var loanAppRequest = new {
-                CustomerName = string.Format($"{loanApplication.Applicant.FirstName} {loanApplication.Applicant.LastName}"),
-                LoanAmount = loanApplication.LoanAmount.Amount
-            };
+            var json = System.Text.Json.JsonSerializer.Serialize<LoanApplicationResult>(response);
 
             var request = new DurableHttpRequest(
                 HttpMethod.Post,
-                new Uri("https://localhost:5003/loanapplication")
+                new Uri("https://localhost:5003/loanapplication"),
+                null,
+                json
             );
 
             await dashboardMessages.AddAsync(new SignalRMessage

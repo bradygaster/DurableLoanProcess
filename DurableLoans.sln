@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29403.142
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DurableLoans.LoanApplicationApi.Client", "DurableLoans.LoanApplicationApi.Client\DurableLoans.LoanApplicationApi.Client.csproj", "{A596949D-17B0-4273-8A78-0F35F7C0AE78}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DurableLoans.LoanOfficerNotificationService", "DurableLoans.LoanOfficerNotificationService\DurableLoans.LoanOfficerNotificationService.csproj", "{053ABD87-C304-4664-A2FA-6497F11360BF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DurableLoans.LoanProcess", "DurableLoans.LoanProcess\DurableLoans.LoanProcess.csproj", "{043759D4-972E-4664-A093-46949824EEF7}"
@@ -25,18 +23,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A596949D-17B0-4273-8A78-0F35F7C0AE78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A596949D-17B0-4273-8A78-0F35F7C0AE78}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A596949D-17B0-4273-8A78-0F35F7C0AE78}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{A596949D-17B0-4273-8A78-0F35F7C0AE78}.Debug|x64.Build.0 = Debug|Any CPU
-		{A596949D-17B0-4273-8A78-0F35F7C0AE78}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{A596949D-17B0-4273-8A78-0F35F7C0AE78}.Debug|x86.Build.0 = Debug|Any CPU
-		{A596949D-17B0-4273-8A78-0F35F7C0AE78}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A596949D-17B0-4273-8A78-0F35F7C0AE78}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A596949D-17B0-4273-8A78-0F35F7C0AE78}.Release|x64.ActiveCfg = Release|Any CPU
-		{A596949D-17B0-4273-8A78-0F35F7C0AE78}.Release|x64.Build.0 = Release|Any CPU
-		{A596949D-17B0-4273-8A78-0F35F7C0AE78}.Release|x86.ActiveCfg = Release|Any CPU
-		{A596949D-17B0-4273-8A78-0F35F7C0AE78}.Release|x86.Build.0 = Release|Any CPU
 		{053ABD87-C304-4664-A2FA-6497F11360BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{053ABD87-C304-4664-A2FA-6497F11360BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{053ABD87-C304-4664-A2FA-6497F11360BF}.Debug|x64.ActiveCfg = Debug|Any CPU
