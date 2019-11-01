@@ -4,11 +4,13 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace DurableLoans.LoanProcess
@@ -45,7 +47,7 @@ namespace DurableLoans.LoanProcess
                     agencyTasks.Add(context.CallActivityAsync<CreditAgencyResult>(nameof(CheckCreditAgency), agency));
                 }
 
-                await dashboardMessages.AddAsync(new SignalRMessage
+                await context.CallActivityAsync(nameof(SendDashboardMessage), new SignalRMessage
                 {
                     Target = "agencyCheckPhaseStarted",
                     Arguments = new object[] { }
@@ -54,7 +56,7 @@ namespace DurableLoans.LoanProcess
                 // wait for all the agencies to return their results
                 results = await Task.WhenAll(agencyTasks);
 
-                await dashboardMessages.AddAsync(new SignalRMessage
+                await context.CallActivityAsync(nameof(SendDashboardMessage), new SignalRMessage
                 {
                     Target = "agencyCheckPhaseCompleted",
                     Arguments = new object[] { !(results.Any(x => x.IsApproved == false)) }
@@ -63,7 +65,8 @@ namespace DurableLoans.LoanProcess
 
             var loanApplicationResult = new LoanApplicationResult
             {
-                IsApproved = loanStarted && !(results.Any(x => x.IsApproved == false))
+                IsApproved = loanStarted && !(results.Any(x => x.IsApproved == false)),
+                Application = loanApplication
             };
 
             logger.LogWarning($"Agency checks result with {loanApplicationResult.IsApproved} for loan amount of {loanApplication.LoanAmount.Amount} to customer {loanApplication.Applicant.ToString()}");
@@ -80,26 +83,35 @@ namespace DurableLoans.LoanProcess
             // send the loan for final human validation
             logger.LogInformation($"Sending loan application for {loanApplicationResult.Application.Applicant.FirstName} {loanApplicationResult.Application.Applicant.LastName} for approval");
 
-            var json = System.Text.Json.JsonSerializer.Serialize<LoanApplicationResult>(loanApplicationResult);
-            logger.LogDebug(json);
+            var json = System.Text.Json.JsonSerializer.Serialize<LoanApplicationResult>(loanApplicationResult, 
+                new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                });
+            logger.LogInformation(json);
 
             var url = Environment.GetEnvironmentVariable("LoanOfficerServiceUrl");
-            logger.LogDebug(url);
+            logger.LogInformation(url);
 
             var request = new DurableHttpRequest(
                 HttpMethod.Post,
                 new Uri(url),
-                null,
-                json
+                headers: new Dictionary<string, StringValues>{{ "Content-Type", "application/json"}},
+                content: json
             );
 
             DurableHttpResponse restartResponse = await context.CallHttpAsync(request);
 
-            await dashboardMessages.AddAsync(new SignalRMessage
+            logger.LogInformation($"Status code returned: {restartResponse.StatusCode}");
+
+            if(restartResponse.StatusCode == HttpStatusCode.Accepted)
             {
-                Target = "loanApplicationComplete",
-                Arguments = new object[] { loanApplicationResult }
-            });
+                await context.CallActivityAsync(nameof(SendDashboardMessage), new SignalRMessage
+                {
+                    Target = "loanApplicationComplete",
+                    Arguments = new object[] { loanApplicationResult }
+                });
+            }
             
             return loanApplicationResult;
         }

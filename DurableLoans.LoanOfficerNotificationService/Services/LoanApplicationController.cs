@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using DurableLoans.DomainModel;
+using System.Text.Json;
 
 namespace DurableLoans.LoanOfficerNotificationService.Services
 {
@@ -22,9 +23,14 @@ namespace DurableLoans.LoanOfficerNotificationService.Services
         public ILogger<LoanApplicationController> Logger { get; }
 
         [HttpPost]
-        public ActionResult Post([FromBody] LoanApplication loanApplication)
+        public ActionResult Post([FromBody] LoanApplicationResult loanApplicationResult)
         {
-            Logger.LogInformation($"Loan App received for {loanApplication.Applicant.FirstName} {loanApplication.Applicant.LastName}");
+            var json = JsonSerializer.Serialize<LoanApplicationResult>(loanApplicationResult, 
+                new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                });
+            Logger.LogDebug(json);
             
             //LoanApplicationProxy.SendLoanApplicationToOfficer(loanApplication);
             return Accepted();
