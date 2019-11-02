@@ -25,14 +25,8 @@ namespace DurableLoans.LoanOfficerNotificationService.Services
         [HttpPost]
         public ActionResult Post([FromBody] LoanApplicationResult loanApplicationResult)
         {
-            var json = JsonSerializer.Serialize<LoanApplicationResult>(loanApplicationResult, 
-                new JsonSerializerOptions
-                {
-                    WriteIndented = true
-                });
-            Logger.LogDebug(json);
-            
-            //LoanApplicationProxy.SendLoanApplicationToOfficer(loanApplication);
+            LoanApplicationProxy.SendLoanApplicationToOfficer(loanApplicationResult);
+
             return Accepted();
         }
     }

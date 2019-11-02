@@ -36,6 +36,7 @@ namespace DurableLoans.Web
 
             services.AddServerSideBlazor();
             services.AddGrpc();
+            services.AddSingleton<LoanApprovalService>();
             services.AddSingleton<CurrencyConversionService>();
             services.AddAutoMapper();
 

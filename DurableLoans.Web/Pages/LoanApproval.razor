@@ -1,0 +1,36 @@
+﻿@page "/loanapproval"
+@using DurableLoans.LoanOfficerNotificationService
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@inject DurableLoans.Web.Services.LoanApprovalService LoanApprovalService
+
+<h3>Loan Approval</h3>
+
+<ul>
+@foreach(LoanApplicationReceived received in results)
+{
+    <li>@received.CustomerName</li>
+}
+</ul>
+
+@code 
+{
+    List<LoanApplicationReceived> results = new List<LoanApplicationReceived>();
+        
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if(firstRender)
+        {
+            _ = GetIncomingLoans();
+        }
+    }
+
+    async Task GetIncomingLoans()
+    {
+        await foreach (var loanResult in LoanApprovalService.GetIncomingLoanApplications())
+        {
+            results.Add(loanResult);
+            StateHasChanged();
+        }
+    }
+}

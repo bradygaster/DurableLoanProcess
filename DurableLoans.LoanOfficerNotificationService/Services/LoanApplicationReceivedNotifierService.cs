@@ -3,23 +3,29 @@ using System.Linq;
 using System.Threading.Tasks;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using Microsoft.Extensions.Logging;
 
 namespace DurableLoans.LoanOfficerNotificationService.Services
 {
     public class LoanApplicationReceivedNotifierService
         : LoanApplicationReceivedNotifier.LoanApplicationReceivedNotifierBase
     {
-        public LoanApplicationReceivedNotifierService(LoanApplicationProxy loanApplicationProxy)
+        public LoanApplicationReceivedNotifierService(LoanApplicationProxy loanApplicationProxy,
+            ILogger<LoanApplicationReceivedNotifierService> logger)
         {
             LoanApplicationProxy = loanApplicationProxy;
+            Logger = logger;
         }
 
         public LoanApplicationProxy LoanApplicationProxy { get; }
+        public ILogger<LoanApplicationReceivedNotifierService> Logger { get; }
 
         public override async Task GetLoanApplicationStream(Empty request, 
             IServerStreamWriter<LoanApplicationReceived> responseStream, 
             ServerCallContext context)
         {
+            Logger.LogInformation("Returning loan applications");
+            
             while (!context.CancellationToken.IsCancellationRequested)
             {
                 LoanApplicationProxy.ReceivedLoans.ForEach(async loanApp => 
@@ -38,6 +44,7 @@ namespace DurableLoans.LoanOfficerNotificationService.Services
                             })
                     );
 
+                    Logger.LogInformation($"Returning loan application for {receivedLoan.CustomerName}");
                     await responseStream.WriteAsync(receivedLoan);
                 });
 
