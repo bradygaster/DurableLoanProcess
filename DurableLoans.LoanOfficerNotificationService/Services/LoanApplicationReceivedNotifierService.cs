@@ -24,10 +24,10 @@ namespace DurableLoans.LoanOfficerNotificationService.Services
             IServerStreamWriter<LoanApplicationReceived> responseStream, 
             ServerCallContext context)
         {
-            Logger.LogInformation("Returning loan applications");
-            
             while (!context.CancellationToken.IsCancellationRequested)
             {
+                Logger.LogInformation("Returning loan applications");
+            
                 LoanApplicationProxy.ReceivedLoans.ForEach(async loanApp => 
                 {
                     var receivedLoan = new LoanApplicationReceived

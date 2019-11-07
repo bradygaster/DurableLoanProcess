@@ -35,10 +35,12 @@ namespace DurableLoans.Web
 #endif
 
             services.AddServerSideBlazor();
-            services.AddGrpc();
-            services.AddSingleton<LoanApprovalService>();
             services.AddSingleton<CurrencyConversionService>();
             services.AddAutoMapper();
+            services.AddLoanOfficerClient(options => 
+            {
+                options.Address = new Uri(Configuration["LoanApprovalService:BaseAddress"]);
+            });
 
             IConfigurationSection loanServiceConfig = Configuration.GetSection("LendingService");
 

@@ -1,7 +1,5 @@
 ﻿@page "/loanapproval"
 @using DurableLoans.LoanOfficerNotificationService
-@using Microsoft.Extensions.Configuration
-@inject IConfiguration Configuration
 @inject DurableLoans.Web.Services.LoanApprovalService LoanApprovalService
 
 <h3>Loan Approval</h3>
@@ -15,6 +13,7 @@
 
 @code 
 {
+    CancellationTokenSource loanAppStreamCts = new CancellationTokenSource();
     List<LoanApplicationReceived> results = new List<LoanApplicationReceived>();
         
     protected override void OnAfterRender(bool firstRender)
@@ -27,7 +26,7 @@
 
     async Task GetIncomingLoans()
     {
-        await foreach (var loanResult in LoanApprovalService.GetIncomingLoanApplications())
+        await foreach (var loanResult in LoanApprovalService.GetIncomingLoanApplications(loanAppStreamCts.Token))
         {
             results.Add(loanResult);
             StateHasChanged();
