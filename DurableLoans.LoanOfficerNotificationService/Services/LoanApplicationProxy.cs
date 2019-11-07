@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DurableLoans.DomainModel;
 
 namespace DurableLoans.LoanOfficerNotificationService.Services
 {
@@ -7,12 +8,12 @@ namespace DurableLoans.LoanOfficerNotificationService.Services
     {
         public LoanApplicationProxy()
         {
-            ReceivedLoans = new List<LoanApplication>();
+            ReceivedLoans = new List<LoanApplicationResult>();
         }
 
-        public List<LoanApplication> ReceivedLoans { get; }
+        public List<LoanApplicationResult> ReceivedLoans { get; }
 
-        public void SendLoanApplicationToOfficer(LoanApplication loanApplication)
+        public void SendLoanApplicationToOfficer(LoanApplicationResult loanApplication)
         {
             ReceivedLoans.Add(loanApplication);
         }

@@ -337,3 +337,4 @@ ASALocalRun/
 # misc
 **/package-lock.json
 **/local.settings.json
+DurableLoans.Web/appsettings.Development.json

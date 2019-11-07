@@ -4,6 +4,7 @@ using DurableLoans.DomainModel;
 using DurableLoans.ExchangeRateService;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace DurableLoans.Web.Services
 {
@@ -11,14 +12,21 @@ namespace DurableLoans.Web.Services
     {
         private readonly IConfiguration _configuration;
 
-        public CurrencyConversionService(IConfiguration configuration)
+        public ILogger<CurrencyConversionService> Logger { get; }
+
+        public CurrencyConversionService(IConfiguration configuration,
+            ILogger<CurrencyConversionService> logger)
         {
             _configuration = configuration;
+            Logger = logger;
         }
 
         private async Task<double> GetExchangeRateAsync(Currency currencyTypeFrom, Currency currencyTypeTo)
         {
-            using var channel = GrpcChannel.ForAddress(_configuration["ExchangeRateService:BaseAddress"]);
+            var grpcUrl = _configuration["ExchangeRateService:BaseAddress"];
+            using var channel = GrpcChannel.ForAddress(grpcUrl);
+            Logger.LogInformation($"gRPC URL: {grpcUrl}");
+            
             var client = new ExchangeRateManager.ExchangeRateManagerClient(channel);
             var request = new ExchangeRateRequest
             {

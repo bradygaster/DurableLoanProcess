@@ -13,7 +13,7 @@ namespace DurableLoans.LoanProcess
         [FunctionName(nameof(HttpStart))]
         public static async Task<HttpResponseMessage> HttpStart(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post")]HttpRequestMessage req,
-            [OrchestrationClient]DurableOrchestrationClient starter,
+            [DurableClient] IDurableOrchestrationClient starter,
             ILogger log)
         {
             using var jsonStream = await req.Content.ReadAsStreamAsync();

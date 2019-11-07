@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Protobuf Include="..\DurableLoans.LoanOfficerNotificationService\Protos\LoanOffice.proto" GrpcServices="Client" Link="Protos\LoanOffice.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Protobuf Include="..\DurableLoans.ExchangeRateService\Protos\exchange_rate.proto" GrpcServices="Client" Link="Protos\exchange_rate.proto" />
   </ItemGroup>
 
