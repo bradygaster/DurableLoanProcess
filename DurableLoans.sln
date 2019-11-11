@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DurableLoans.DomainModel", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DurableLoans.ExchangeRateService", "DurableLoans.ExchangeRateService\DurableLoans.ExchangeRateService.csproj", "{0C9242EC-1784-4315-8E9B-2687FD8E5510}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DurableLoans.ApprovalServiceClientSdk", "DurableLoans.ApprovalServiceClientSdk\DurableLoans.ApprovalServiceClientSdk.csproj", "{EE743F75-59A8-469F-9895-FC64B76AA1B3}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

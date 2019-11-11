@@ -29,10 +29,10 @@ namespace DurableLoans.Web
 #if DEBUG
             if (Env.IsDevelopment() && RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
                 builder.AddRazorRuntimeCompilation();
             }
 #endif
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
             services.AddServerSideBlazor();
             services.AddSingleton<CurrencyConversionService>();

@@ -22,11 +22,6 @@ namespace DurableLoans.LoanOfficerNotificationService
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.ConfigureKestrel(options =>
-                    {
-                        options.ListenLocalhost(5003, o => o.Protocols = 
-                            HttpProtocols.Http1AndHttp2);
-                    });
                     webBuilder.UseStartup<Startup>();
                 });
     }
