@@ -11,7 +11,9 @@ The solution consists of these projects, each of which serve an individual purpo
 |---|---|
 |DurableLoans.DomainModel   |A series of classes representing the ontology of the overall application.  |
 |DurableLoans.ExchangeRateService   |gRPC service that provides currency exchange rate conversion.|
-|DurableLoans.LoanOfficerNotificationService   |Back-end service containing both a REST API and a gRPC endpoint. The REST API receives requests from the Durable Function. When it receives requests it marshalls those over to a gRPC endpoint, which then streams that data out to a client used by the loan officer to provide final approval of loan applications.|
+|DurableLoans.LoanOffice.Inbox      |REST API that receives requests from the Durable Function. The API sends the incoming loan applications into an Azure Storage Queue.|
+|DurableLoans.LoanOffice.InboxProcessor      |Worker Service that wathces the inbox queue. When loan applications are dropped onto the queue by the inbox REST API, this project picks them up and saves them to Cosmos, in the `Inbox` container where they await human review.
+|DurableLoans.LoanOfficerNotificationService   |Back-end service containing a gRPC endpoint that streams loans out to a client used by the loan officer to provide final approval of loan applications.|
 |DurableLoans.LoanProcess   |The Azure Function that serves as the back-end for the system.|
 |DurableLoans.Web   |The front-end web app.|
 
@@ -20,6 +22,8 @@ The solution consists of these projects, each of which serve an individual purpo
 1. Configure the `DurableLoans.LoanProcess` project with the correct Azure SignalR Service and Azure Storage connection strings. 
 1. `func start` the `DurableProcess.LoanProcess`.
 1. `dotnet run` the `DurableLoans.ExchangeRateService` project.
+1. `dotnet run` the `DurableLoans.LoanOffice.InboxProcessor` project.
+1. `dotnet run` the `DurableLoans.LoanOffice.Inbox` project.
 1. `dotnet run` the `DurableLoans.LoanOfficerNotificationService` project.
 1. `dotnet run` the `DurableLoans.Web` project.
 
