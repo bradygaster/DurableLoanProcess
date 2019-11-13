@@ -24,8 +24,6 @@ namespace DurableLoans.Web.Services
 
         public IAsyncEnumerable<LoanApplicationReceived> GetIncomingLoanApplications(CancellationToken token)
         {
-            Logger.LogInformation("Getting received loans");
-
             return LoanOfficerClient.GetLoanApplicationStream(
                 new Empty(), 
                 cancellationToken: token).ResponseStream.ReadAllAsync();

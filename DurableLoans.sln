@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29403.142
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DurableLoans.LoanOfficerNotificationService", "DurableLoans.LoanOfficerNotificationService\DurableLoans.LoanOfficerNotificationService.csproj", "{053ABD87-C304-4664-A2FA-6497F11360BF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DurableLoans.LoanProcess", "DurableLoans.LoanProcess\DurableLoans.LoanProcess.csproj", "{043759D4-972E-4664-A093-46949824EEF7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DurableLoans.LoanProcess", "DurableLoans.LoanProcess\DurableLoans.LoanProcess.csproj", "{043759D4-972E-4664-A093-46949824EEF7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DurableLoans.Web", "DurableLoans.Web\DurableLoans.Web.csproj", "{5369E785-3B55-4B09-B539-5A959094B7B1}"
 EndProject
