@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DurableLoans.DomainModel;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
@@ -10,24 +12,23 @@ namespace DurableLoans.LoanOfficerNotificationService.Services
     public class LoanApplicationReceivedNotifierService
         : LoanApplicationReceivedNotifier.LoanApplicationReceivedNotifierBase
     {
-        public LoanApplicationReceivedNotifierService(LoanApplicationProxy loanApplicationProxy,
-            ILogger<LoanApplicationReceivedNotifierService> logger)
+        public LoanApplicationReceivedNotifierService(ILogger<LoanApplicationReceivedNotifierService> logger)
         {
-            LoanApplicationProxy = loanApplicationProxy;
             Logger = logger;
         }
 
-        public LoanApplicationProxy LoanApplicationProxy { get; }
         public ILogger<LoanApplicationReceivedNotifierService> Logger { get; }
 
+#pragma warning disable CS1998
         public override async Task GetLoanApplicationStream(Empty request, 
             IServerStreamWriter<LoanApplicationReceived> responseStream, 
             ServerCallContext context)
+#pragma warning restore CS1998
         {
             while (!context.CancellationToken.IsCancellationRequested)
             {
-                var tmp = LoanApplicationProxy.ReceivedLoans.ToList();
-                LoanApplicationProxy.ReceivedLoans.Clear();
+                // todo: get the non-finalized loans from cosmos and send back
+                var tmp = new List<LoanApplicationResult>();
 
                 tmp.ForEach(async loanApp => 
                 {

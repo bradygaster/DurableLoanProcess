@@ -29,10 +29,6 @@ namespace DurableLoans.LoanOfficerNotificationService
                         {
                             options.ListenLocalhost(5003, o => o.Protocols = HttpProtocols.Http2);
                         });
-                        webBuilder.ConfigureKestrel(options =>
-                        {
-                            options.ListenLocalhost(5004, o => o.Protocols = HttpProtocols.Http1);
-                        });
                     }
                     webBuilder.UseStartup<Startup>();
                 });

@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DurableLoans.DomainModel", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DurableLoans.ExchangeRateService", "DurableLoans.ExchangeRateService\DurableLoans.ExchangeRateService.csproj", "{0C9242EC-1784-4315-8E9B-2687FD8E5510}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DurableLoans.LoanOffice.Inbox", "DurableLoans.LoanOffice.Inbox\DurableLoans.LoanOffice.Inbox.csproj", "{ED67D1EA-9DD9-490E-B41F-8016625A4B5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DurableLoans.LoanOffice.InboxProcessor", "DurableLoans.LoanOffice.InboxProcessor\DurableLoans.LoanOffice.InboxProcessor.csproj", "{0C8CE73C-1FCD-4830-A6CE-240887087940}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -127,6 +131,46 @@ Global
 		{0C9242EC-1784-4315-8E9B-2687FD8E5510}.Release|x64.Build.0 = Release|Any CPU
 		{0C9242EC-1784-4315-8E9B-2687FD8E5510}.Release|x86.ActiveCfg = Release|Any CPU
 		{0C9242EC-1784-4315-8E9B-2687FD8E5510}.Release|x86.Build.0 = Release|Any CPU
+		{ED67D1EA-9DD9-490E-B41F-8016625A4B5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED67D1EA-9DD9-490E-B41F-8016625A4B5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED67D1EA-9DD9-490E-B41F-8016625A4B5F}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{ED67D1EA-9DD9-490E-B41F-8016625A4B5F}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{ED67D1EA-9DD9-490E-B41F-8016625A4B5F}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{ED67D1EA-9DD9-490E-B41F-8016625A4B5F}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{ED67D1EA-9DD9-490E-B41F-8016625A4B5F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{ED67D1EA-9DD9-490E-B41F-8016625A4B5F}.Debug|x64.Build.0 = Debug|Any CPU
+		{ED67D1EA-9DD9-490E-B41F-8016625A4B5F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{ED67D1EA-9DD9-490E-B41F-8016625A4B5F}.Debug|x86.Build.0 = Debug|Any CPU
+		{ED67D1EA-9DD9-490E-B41F-8016625A4B5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED67D1EA-9DD9-490E-B41F-8016625A4B5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED67D1EA-9DD9-490E-B41F-8016625A4B5F}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{ED67D1EA-9DD9-490E-B41F-8016625A4B5F}.Release|iPhone.Build.0 = Release|Any CPU
+		{ED67D1EA-9DD9-490E-B41F-8016625A4B5F}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{ED67D1EA-9DD9-490E-B41F-8016625A4B5F}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{ED67D1EA-9DD9-490E-B41F-8016625A4B5F}.Release|x64.ActiveCfg = Release|Any CPU
+		{ED67D1EA-9DD9-490E-B41F-8016625A4B5F}.Release|x64.Build.0 = Release|Any CPU
+		{ED67D1EA-9DD9-490E-B41F-8016625A4B5F}.Release|x86.ActiveCfg = Release|Any CPU
+		{ED67D1EA-9DD9-490E-B41F-8016625A4B5F}.Release|x86.Build.0 = Release|Any CPU
+		{0C8CE73C-1FCD-4830-A6CE-240887087940}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C8CE73C-1FCD-4830-A6CE-240887087940}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C8CE73C-1FCD-4830-A6CE-240887087940}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{0C8CE73C-1FCD-4830-A6CE-240887087940}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{0C8CE73C-1FCD-4830-A6CE-240887087940}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{0C8CE73C-1FCD-4830-A6CE-240887087940}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{0C8CE73C-1FCD-4830-A6CE-240887087940}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0C8CE73C-1FCD-4830-A6CE-240887087940}.Debug|x64.Build.0 = Debug|Any CPU
+		{0C8CE73C-1FCD-4830-A6CE-240887087940}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0C8CE73C-1FCD-4830-A6CE-240887087940}.Debug|x86.Build.0 = Debug|Any CPU
+		{0C8CE73C-1FCD-4830-A6CE-240887087940}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C8CE73C-1FCD-4830-A6CE-240887087940}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C8CE73C-1FCD-4830-A6CE-240887087940}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{0C8CE73C-1FCD-4830-A6CE-240887087940}.Release|iPhone.Build.0 = Release|Any CPU
+		{0C8CE73C-1FCD-4830-A6CE-240887087940}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{0C8CE73C-1FCD-4830-A6CE-240887087940}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{0C8CE73C-1FCD-4830-A6CE-240887087940}.Release|x64.ActiveCfg = Release|Any CPU
+		{0C8CE73C-1FCD-4830-A6CE-240887087940}.Release|x64.Build.0 = Release|Any CPU
+		{0C8CE73C-1FCD-4830-A6CE-240887087940}.Release|x86.ActiveCfg = Release|Any CPU
+		{0C8CE73C-1FCD-4830-A6CE-240887087940}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

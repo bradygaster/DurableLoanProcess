@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "DurableLoans.LoanOffice.Inbox": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:5004"
+    }
+  }
+}
