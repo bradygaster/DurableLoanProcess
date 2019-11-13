@@ -1,24 +1,46 @@
 ﻿@page "/loanapproval"
+@implements IDisposable
 @using DurableLoans.LoanOfficerNotificationService
 @inject DurableLoans.Web.Services.LoanApprovalService LoanApprovalService
 
 <h3>Loan Approval</h3>
 
-<ul>
-@foreach(LoanApplicationReceived received in results)
-{
-    <li>@received.CustomerName</li>
-}
-</ul>
+<table class="table" style="width: 800px;">
+    <thead>
+        <tr>
+            <td style="width: 200px;"></td>
+            <th style="width: 500px;">Customer Name</th>
+            <th style="width: 100px;">Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (LoanApplicationReceived received in results)
+        {
+        <tr>
+            <td style="width: 200px;">
+                <buton class="btn btn-success">Approve</buton>
+                <buton class="btn btn-danger">Decline</buton>
+            </td>
+            <td style="width: 500px;">@received.CustomerName</td>
+            <td style="width: 100px;">@received.LoanAmount</td>
+        </tr>
+        }
+    </tbody>
+</table>
 
-@code 
+@code
 {
     CancellationTokenSource loanAppStreamCts = new CancellationTokenSource();
     List<LoanApplicationReceived> results = new List<LoanApplicationReceived>();
-        
+
+    void IDisposable.Dispose()
+    {
+        loanAppStreamCts.Cancel();
+    }
+
     protected override void OnAfterRender(bool firstRender)
     {
-        if(firstRender)
+        if (firstRender)
         {
             _ = GetIncomingLoans();
         }

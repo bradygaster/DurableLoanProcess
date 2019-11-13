@@ -26,13 +26,11 @@ namespace DurableLoans.Web
         {
             IMvcBuilder builder = services.AddRazorPages();
 
-#if DEBUG
             if (Env.IsDevelopment() && RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
                 builder.AddRazorRuntimeCompilation();
             }
-#endif
 
             services.AddServerSideBlazor();
             services.AddSingleton<CurrencyConversionService>();

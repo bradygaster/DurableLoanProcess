@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 using DurableLoans.DomainModel;
+using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 
 namespace DurableLoans.LoanProcess
 {

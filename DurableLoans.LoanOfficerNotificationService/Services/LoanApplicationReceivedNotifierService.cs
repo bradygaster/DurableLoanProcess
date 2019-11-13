@@ -26,9 +26,10 @@ namespace DurableLoans.LoanOfficerNotificationService.Services
         {
             while (!context.CancellationToken.IsCancellationRequested)
             {
-                Logger.LogInformation("Returning loan applications");
-            
-                LoanApplicationProxy.ReceivedLoans.ForEach(async loanApp => 
+                var tmp = LoanApplicationProxy.ReceivedLoans.ToList();
+                LoanApplicationProxy.ReceivedLoans.Clear();
+
+                tmp.ForEach(async loanApp => 
                 {
                     var receivedLoan = new LoanApplicationReceived
                     {
@@ -46,9 +47,8 @@ namespace DurableLoans.LoanOfficerNotificationService.Services
 
                     Logger.LogInformation($"Returning loan application for {receivedLoan.CustomerName}");
                     await responseStream.WriteAsync(receivedLoan);
+                    await Task.Delay(TimeSpan.FromSeconds(2));
                 });
-
-                await Task.Delay(TimeSpan.FromSeconds(2));
             }
         }
     }
