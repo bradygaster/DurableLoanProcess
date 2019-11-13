@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "DurableLoans.LoanOffice.InboxProcessor": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

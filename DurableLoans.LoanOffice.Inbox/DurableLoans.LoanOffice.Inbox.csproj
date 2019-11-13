@@ -5,11 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\LoanOffice.proto" GrpcServices="Server" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Grpc.AspNetCore" Version="2.23.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc4" />
+    <PackageReference Include="Microsoft.Azure.Storage.Queue" Version="11.1.0" />
   </ItemGroup>
 
   <ItemGroup>

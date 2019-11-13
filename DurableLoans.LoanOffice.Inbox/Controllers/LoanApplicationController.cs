@@ -7,26 +7,25 @@ using Microsoft.Extensions.Logging;
 using DurableLoans.DomainModel;
 using System.Text.Json;
 
-namespace DurableLoans.LoanOfficerNotificationService.Services
+namespace DurableLoans.LoanOffice.Inbox
 {
     [Route("[controller]")]
     public class LoanApplicationController : Controller
     {
-        public LoanApplicationController(LoanApplicationProxy loanApplicationProxy,
-            ILogger<LoanApplicationController> logger)
+        public LoanApplicationController(ILogger<LoanApplicationController> logger,
+            InboxQueue inboxQueue)
         {
-            LoanApplicationProxy = loanApplicationProxy;
             Logger = logger;
+            InboxQueue = inboxQueue;
         }
 
-        public LoanApplicationProxy LoanApplicationProxy { get; }
         public ILogger<LoanApplicationController> Logger { get; }
+        public InboxQueue InboxQueue { get; }
 
         [HttpPost]
-        public ActionResult Post([FromBody] LoanApplicationResult loanApplicationResult)
+        public async Task<ActionResult> Post([FromBody] LoanApplicationResult loanApplicationResult)
         {
-            LoanApplicationProxy.SendLoanApplicationToOfficer(loanApplicationResult);
-
+            await InboxQueue.EnqueueLoanApplicationResult(loanApplicationResult);
             return Accepted();
         }
     }
