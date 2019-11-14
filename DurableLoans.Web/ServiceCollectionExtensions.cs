@@ -1,8 +1,8 @@
 using System;
-using DurableLoans.LoanOfficerNotificationService;
 using DurableLoans.Web.Services;
 using Grpc.Net.ClientFactory;
 using Microsoft.Extensions.DependencyInjection;
+using DurableLoans.LoanOffice.ToBeApproved;
 
 namespace DurableLoans.Web
 {
@@ -11,8 +11,8 @@ namespace DurableLoans.Web
         public static IServiceCollection AddLoanOfficerClient(this IServiceCollection services,
             Action<GrpcClientFactoryOptions> configure)
         {
-            services.AddGrpcClient<LoanApplicationReceivedNotifier.LoanApplicationReceivedNotifierClient>(configure);
-            services.AddScoped<LoanApprovalService>();
+            services.AddGrpcClient<Feed.FeedClient>(configure);
+            services.AddScoped<FeedClientService>();
             return services;
         }
     }

@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DurableLoans.LoanOfficerNotificationService.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace DurableLoans.LoanOfficerNotificationService
+namespace DurableLoans.LoanOffice.ToBeApproved
 {
     public class Startup
     {
@@ -17,6 +16,7 @@ namespace DurableLoans.LoanOfficerNotificationService
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddInboxStorageSupport();
             services.AddGrpc();
         }
 
@@ -32,7 +32,7 @@ namespace DurableLoans.LoanOfficerNotificationService
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcService<LoanApplicationReceivedNotifierService>();
+                endpoints.MapGrpcService<FeedService>();
                 endpoints.MapGet("/proto", async req =>
                 {
                     await req.Response.SendFileAsync("Protos/LoanOffice.proto", req.RequestAborted);

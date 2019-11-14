@@ -7,32 +7,35 @@ using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 
-namespace DurableLoans.LoanOfficerNotificationService.Services
+namespace DurableLoans.LoanOffice.ToBeApproved
 {
-    public class LoanApplicationReceivedNotifierService
-        : LoanApplicationReceivedNotifier.LoanApplicationReceivedNotifierBase
+    public class FeedService : Feed.FeedBase
     {
-        public LoanApplicationReceivedNotifierService(ILogger<LoanApplicationReceivedNotifierService> logger)
+        public FeedService(ILogger<FeedService> logger,
+            DataLayer dataLayer)
         {
             Logger = logger;
+            DataLayer = dataLayer;
         }
 
-        public ILogger<LoanApplicationReceivedNotifierService> Logger { get; }
+        public ILogger<FeedService> Logger { get; }
+        public DataLayer DataLayer { get; }
 
 #pragma warning disable CS1998
-        public override async Task GetLoanApplicationStream(Empty request, 
-            IServerStreamWriter<LoanApplicationReceived> responseStream, 
+        public override async Task Receive(Empty request, 
+            IServerStreamWriter<FeedItem> responseStream, 
             ServerCallContext context)
 #pragma warning restore CS1998
         {
             while (!context.CancellationToken.IsCancellationRequested)
             {
-                // todo: get the non-finalized loans from cosmos and send back
-                var tmp = new List<LoanApplicationResult>();
+                var inbox = DataLayer
+                        .GetInbox()
+                        .Select(x => x.LoanApplication).ToList();
 
-                tmp.ForEach(async loanApp => 
+                inbox.ForEach(async loanApp => 
                 {
-                    var receivedLoan = new LoanApplicationReceived
+                    var receivedLoan = new FeedItem
                     {
                         CustomerName = string.Format($"{loanApp.Application.Applicant.FirstName} {loanApp.Application.Applicant.LastName}"),
                         LoanAmount = loanApp.Application.LoanAmount.Amount
@@ -48,8 +51,9 @@ namespace DurableLoans.LoanOfficerNotificationService.Services
 
                     Logger.LogInformation($"Returning loan application for {receivedLoan.CustomerName}");
                     await responseStream.WriteAsync(receivedLoan);
-                    await Task.Delay(TimeSpan.FromSeconds(2));
                 });
+
+                await Task.Delay(TimeSpan.FromSeconds(2));
             }
         }
     }
