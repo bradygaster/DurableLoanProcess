@@ -4,10 +4,6 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(RunConfiguration)' == 'DurableLoans.LoanOfficerNotificationService' ">
-    <StartAction>Project</StartAction>
-    <ApplicationURL>http://localhost:5000</ApplicationURL>
-  </PropertyGroup>
   <ItemGroup>
     <Protobuf Include="Protos\LoanOffice.proto">
       <GrpcServices>Server</GrpcServices>
