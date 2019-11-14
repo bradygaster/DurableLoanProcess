@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting;
 
-namespace DurableLoans.LoanOfficerNotificationService
+namespace DurableLoans.LoanOffice.ToBeApproved
 {
     public class Program
     {
@@ -23,13 +23,12 @@ namespace DurableLoans.LoanOfficerNotificationService
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    if(RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                    webBuilder.ConfigureKestrel(options =>
                     {
-                        webBuilder.ConfigureKestrel(options =>
-                        {
-                            options.ListenLocalhost(5003, o => o.Protocols = HttpProtocols.Http2);
-                        });
-                    }
+                        options.ListenLocalhost(5003, o => o.Protocols = HttpProtocols.Http2);
+                        options.ListenLocalhost(5005, o => o.Protocols = HttpProtocols.Http1);
+                    });
+                    
                     webBuilder.UseStartup<Startup>();
                 });
     }

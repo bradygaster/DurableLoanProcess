@@ -1,17 +1,17 @@
 syntax = "proto3";
 
-option csharp_namespace = "DurableLoans.LoanOfficerNotificationService";
+option csharp_namespace = "DurableLoans.LoanOffice.ToBeApproved";
 
 package LoanOffice;
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
-service LoanApplicationReceivedNotifier {
-  rpc GetLoanApplicationStream (google.protobuf.Empty) returns (stream LoanApplicationReceived);
+service Feed {
+  rpc Receive (google.protobuf.Empty) returns (stream FeedItem);
 }
 
-message LoanApplicationReceived {
+message FeedItem {
   string CustomerName = 1;
   int32 LoanAmount = 2;
 	google.protobuf.Timestamp TimeReceived = 3;

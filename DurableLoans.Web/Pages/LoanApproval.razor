@@ -1,7 +1,7 @@
 ﻿@page "/loanapproval"
 @implements IDisposable
-@using DurableLoans.LoanOfficerNotificationService
-@inject DurableLoans.Web.Services.LoanApprovalService LoanApprovalService
+@using DurableLoans.LoanOffice.ToBeApproved
+@inject DurableLoans.Web.Services.FeedClientService FeedClientService
 
 <h3>Loan Approval</h3>
 
@@ -14,7 +14,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (LoanApplicationReceived received in results)
+        @foreach (var received in results)
         {
         <tr>
             <td style="width: 200px;">
@@ -31,7 +31,7 @@
 @code
 {
     CancellationTokenSource loanAppStreamCts = new CancellationTokenSource();
-    List<LoanApplicationReceived> results = new List<LoanApplicationReceived>();
+    List<FeedItem> results = new List<FeedItem>();
 
     void IDisposable.Dispose()
     {
@@ -42,15 +42,20 @@
     {
         if (firstRender)
         {
-            _ = GetIncomingLoans();
+            _ = Receive();
         }
     }
 
-    async Task GetIncomingLoans()
+    async Task Receive()
     {
-        await foreach (var loanResult in LoanApprovalService.GetIncomingLoanApplications(loanAppStreamCts.Token))
+        await foreach (var loanResult in FeedClientService.Receive(loanAppStreamCts.Token))
         {
-            results.Add(loanResult);
+            if(!(results.Any(x => x.CustomerName == loanResult.CustomerName
+                && x.LoanAmount == loanResult.LoanAmount)))
+            {
+                results.Add(loanResult);
+            }
+
             StateHasChanged();
         }
     }
