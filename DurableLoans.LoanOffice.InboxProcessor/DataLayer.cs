@@ -59,7 +59,7 @@ namespace DurableLoans.LoanOffice.InboxProcessor
                 var record = new LoanApplicationResultRecord
                 {
                     LoanApplication = loanApplication,
-                    LoanApplicationId = Guid.NewGuid().ToString()
+                    Id = Guid.NewGuid().ToString()
                 };
 
                 await InboxContainer.CreateItemAsync<LoanApplicationResultRecord>(record);

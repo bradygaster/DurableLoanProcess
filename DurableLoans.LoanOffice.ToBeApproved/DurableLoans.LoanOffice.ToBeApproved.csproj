@@ -13,6 +13,7 @@
   <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore" Version="2.23.1" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.4.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,5 +25,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Protos\" />
+    <Folder Include="Controllers\" />
   </ItemGroup>
 </Project>

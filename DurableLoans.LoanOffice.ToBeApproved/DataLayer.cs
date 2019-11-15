@@ -67,6 +67,22 @@ namespace DurableLoans.LoanOffice.ToBeApproved
                 return null;
             }
         }
+
+        public async Task<bool> DeleteRecord(string id)
+        {
+            try
+            {
+                await InboxContainer.DeleteItemAsync<LoanApplicationResultRecord>(id,
+                    new PartitionKey(LoanApplicationResultRecord.DEFAULT_PARTITION_KEY));
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, $"Error deleting record ");
+                return false;
+            }
+        }
     }
 
     public static class DataLayerExtensions

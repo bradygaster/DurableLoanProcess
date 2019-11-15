@@ -31,41 +31,38 @@ namespace DurableLoans.LoanProcess
             logger.LogWarning($"Status of application for {loanApplication.Applicant.ToString()} for {loanApplication.LoanAmount}: Checking with agencies.");
 
             // start the process and perform initial validation
-            bool loanStarted = await context.CallActivityAsync<bool>(nameof(Receive), loanApplication);
+            bool loanPreApproved = await context.CallActivityAsync<bool>(nameof(Receive), loanApplication);
 
             // fan out and check the credit agencies
-            if(loanStarted)
+            agencies.AddRange(new CreditAgencyRequest[] {
+                new CreditAgencyRequest { AgencyName = "Contoso, Ltd.", AgencyId = "contoso", Application = loanApplication },
+                new CreditAgencyRequest { AgencyName = "Fabrikam, Inc.", AgencyId = "fabrikam", Application = loanApplication },
+                new CreditAgencyRequest { AgencyName = "Woodgrove Bank", AgencyId = "woodgrove", Application = loanApplication },
+            });
+
+            foreach (var agency in agencies)
             {
-                agencies.AddRange(new CreditAgencyRequest[] {
-                    new CreditAgencyRequest { AgencyName = "Contoso, Ltd.", AgencyId = "contoso", Application = loanApplication },
-                    new CreditAgencyRequest { AgencyName = "Fabrikam, Inc.", AgencyId = "fabrikam", Application = loanApplication },
-                    new CreditAgencyRequest { AgencyName = "Woodgrove Bank", AgencyId = "woodgrove", Application = loanApplication },
-                });
-
-                foreach (var agency in agencies)
-                {
-                    agencyTasks.Add(context.CallActivityAsync<CreditAgencyResult>(nameof(CheckCreditAgency), agency));
-                }
-
-                await context.CallActivityAsync(nameof(SendDashboardMessage), new SignalRMessage
-                {
-                    Target = "agencyCheckPhaseStarted",
-                    Arguments = new object[] { }
-                });
-
-                // wait for all the agencies to return their results
-                results = await Task.WhenAll(agencyTasks);
-
-                await context.CallActivityAsync(nameof(SendDashboardMessage), new SignalRMessage
-                {
-                    Target = "agencyCheckPhaseCompleted",
-                    Arguments = new object[] { !(results.Any(x => x.IsApproved == false)) }
-                });
+                agencyTasks.Add(context.CallActivityAsync<CreditAgencyResult>(nameof(CheckCreditAgency), agency));
             }
+
+            await context.CallActivityAsync(nameof(SendDashboardMessage), new SignalRMessage
+            {
+                Target = "agencyCheckPhaseStarted",
+                Arguments = new object[] { }
+            });
+
+            // wait for all the agencies to return their results
+            results = await Task.WhenAll(agencyTasks);
+
+            await context.CallActivityAsync(nameof(SendDashboardMessage), new SignalRMessage
+            {
+                Target = "agencyCheckPhaseCompleted",
+                Arguments = new object[] { !(results.Any(x => x.IsApproved == false)) }
+            });
 
             var loanApplicationResult = new LoanApplicationResult
             {
-                IsApproved = loanStarted && !(results.Any(x => x.IsApproved == false)),
+                IsApproved = loanPreApproved && !(results.Any(x => x.IsApproved == false)),
                 Application = loanApplication
             };
 
@@ -88,6 +85,7 @@ namespace DurableLoans.LoanProcess
                 {
                     WriteIndented = true
                 });
+
             logger.LogInformation(json);
 
             var url = Environment.GetEnvironmentVariable("LoanOfficerServiceUrl");
