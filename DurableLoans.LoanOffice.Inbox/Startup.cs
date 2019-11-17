@@ -54,7 +54,11 @@ namespace DurableLoans.LoanOffice.Inbox
 
             app.UseRouting();
 
-            app.UseSwagger();
+            app.UseSwagger(c => 
+            {
+                c.SerializeAsV2 = true;
+            });
+            
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Loan Officer API v1");

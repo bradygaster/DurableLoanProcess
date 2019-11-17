@@ -7,6 +7,7 @@
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc4" />
     <PackageReference Include="Microsoft.Azure.Storage.Queue" Version="11.1.0" />
+    <PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="2.1.0-preview-010380003-1338" />
   </ItemGroup>
 
   <ItemGroup>

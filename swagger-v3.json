@@ -1,0 +1,145 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Loan Office To-be-approved Service",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5005"
+    }
+  ],
+  "paths": {
+    "/ToBeApproved": {
+      "get": {
+        "tags": [
+          "ToBeApproved"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoanApplicationResultRecord"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoanApplicationResultRecord"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoanApplicationResultRecord"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Applicant": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoanAmount": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currencyType": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoanApplication": {
+        "type": "object",
+        "properties": {
+          "applicant": {
+            "$ref": "#/components/schemas/Applicant"
+          },
+          "loanAmount": {
+            "$ref": "#/components/schemas/LoanAmount"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AgencyCheckResult": {
+        "type": "object",
+        "properties": {
+          "isApproved": {
+            "type": "boolean"
+          },
+          "agencyName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoanApplicationResult": {
+        "type": "object",
+        "properties": {
+          "application": {
+            "$ref": "#/components/schemas/LoanApplication"
+          },
+          "isApproved": {
+            "type": "boolean"
+          },
+          "agencyResults": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgencyCheckResult"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoanApplicationResultRecord": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "partitionKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "loanApplication": {
+            "$ref": "#/components/schemas/LoanApplicationResult"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

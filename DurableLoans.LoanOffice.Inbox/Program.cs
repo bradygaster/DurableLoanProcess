@@ -18,6 +18,15 @@ namespace DurableLoans.LoanOffice.Inbox
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    config.AddAzureAppConfiguration(options =>
+                    {
+                        var azureAppConfigConnectionString =
+                            hostingContext.Configuration["AzureAppConfigConnectionString"];
+                        options.Connect(azureAppConfigConnectionString);
+                    });
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
