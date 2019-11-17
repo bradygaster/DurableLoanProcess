@@ -93,6 +93,7 @@ function buildHubConnection(hubUrl) {
 }
 
 async function start(hubUrl) {
+    console.log('connecting to hub ' + hubUrl);
     const connection = buildHubConnection(hubUrl);
 
     try {
@@ -103,6 +104,6 @@ async function start(hubUrl) {
     } catch (err) {
         console.assert(connection.state === signalR.HubConnectionState.Disconnected);
         console.error(err);
-        setTimeout(() => start(), 5000);
+        setTimeout(() => start(hubUrl), 5000);
     }
 }
