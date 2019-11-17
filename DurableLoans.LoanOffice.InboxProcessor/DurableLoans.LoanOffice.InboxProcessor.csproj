@@ -9,6 +9,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.0.0" />
     <PackageReference Include="Microsoft.Azure.Storage.Queue" Version="11.1.0" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.4.1" />
+    <PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="2.1.0-preview-010380003-1338" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DurableLoans.DomainModel\DurableLoans.DomainModel.csproj" />

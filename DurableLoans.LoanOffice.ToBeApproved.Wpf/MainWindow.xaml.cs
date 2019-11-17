@@ -45,7 +45,7 @@ namespace DurableLoans.LoanOffice.ToBeApproved.Wpf
             {
                 _btnToPush.IsEnabled = false;
 
-                ApiClient.BaseUrl = "http://durableloans-tobeapproved.azurewebsites.net/";
+                ApiClient.BaseUrl = "http://durableloans-inbox.azurewebsites.net/";
                 Loans = await ApiClient.ToBeApprovedAsync();
 
                 /*_dataGrid01.ItemsSource = Loans.Select(x =>

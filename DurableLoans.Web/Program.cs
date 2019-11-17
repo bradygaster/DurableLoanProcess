@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace DurableLoans.Web
 {
@@ -11,6 +12,15 @@ namespace DurableLoans.Web
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    config.AddAzureAppConfiguration(options =>
+                    {
+                        var azureAppConfigConnectionString =
+                            hostingContext.Configuration["AzureAppConfigConnectionString"];
+                        options.Connect(azureAppConfigConnectionString);
+                    });
+                })
                 .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
     }
 }

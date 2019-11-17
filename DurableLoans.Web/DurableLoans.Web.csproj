@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="2.1.0-preview-010380003-1338" />
     <PackageReference Include="Google.Protobuf" Version="3.10.0" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.24.0-pre1" />
     <PackageReference Include="Grpc.Tools" Version="2.24.0">
