@@ -29,9 +29,3 @@ The solution consists of these projects, each of which serve an individual purpo
 
 There is also a WPF app that demonstrates how to access the API from a desktop/WPF app. 
 
-## Run it
-
-1. On the first link, provide your name and a loan amount. Note that this UI is written in Blazor. If you want to call the exchange rate service to try it out, it will call it directly from the client. Yay Blazor!
-1. Submit the loan.
-1. It will bounce you to the dashboard. 
-1. Watch the magic. 
