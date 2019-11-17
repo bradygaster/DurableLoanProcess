@@ -22,10 +22,12 @@ The solution consists of these projects, each of which serve an individual purpo
 1. Configure the `DurableLoans.LoanProcess` project with the correct Azure SignalR Service and Azure Storage connection strings. 
 1. `func start` the `DurableProcess.LoanProcess`.
 1. `dotnet run` the `DurableLoans.ExchangeRateService` project.
-1. `dotnet run` the `DurableLoans.LoanOffice.InboxProcessor` project.
 1. `dotnet run` the `DurableLoans.LoanOffice.Inbox` project.
+1. `dotnet run` the `DurableLoans.LoanOffice.InboxProcessor` project.
 1. `dotnet run` the `DurableLoans.LoanOffice.ToBeApproved` project.
 1. `dotnet run` the `DurableLoans.Web` project.
+
+There is also a WPF app that demonstrates how to access the API from a desktop/WPF app. 
 
 ## Run it
 
