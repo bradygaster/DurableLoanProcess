@@ -33,11 +33,14 @@ namespace DurableLoans.LoanOffice.ToBeApproved
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.ConfigureKestrel(options =>
+                    if(System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                     {
-                        options.ListenLocalhost(5003, o => o.Protocols = HttpProtocols.Http2);
-                        options.ListenLocalhost(5005, o => o.Protocols = HttpProtocols.Http1);
-                    });
+                        webBuilder.ConfigureKestrel(options =>
+                        {
+                            options.ListenLocalhost(5003, o => o.Protocols = HttpProtocols.Http2);
+                            options.ListenLocalhost(5005, o => o.Protocols = HttpProtocols.Http1);
+                        });
+                    }
                     
                     webBuilder.UseStartup<Startup>();
                 });

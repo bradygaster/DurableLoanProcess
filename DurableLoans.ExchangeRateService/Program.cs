@@ -32,9 +32,7 @@ namespace DurableLoans.ExchangeRateService
                     {
                         webBuilder.ConfigureKestrel(options =>
                         {
-                            // Setup a HTTP/2 endpoint without TLS.
-                            options.ListenLocalhost(5002, o => o.Protocols = 
-                                HttpProtocols.Http2);
+                            options.ListenLocalhost(5002, o => o.Protocols = HttpProtocols.Http2);
                         });
                     }
 
